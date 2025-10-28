@@ -83,3 +83,17 @@
   font-size: 18px;
   cursor: pointer;
 }
+/* Styles for the panel header title and logo */
+#neuratube-sidebar .nt-title {
+    display: flex;
+    align-items: center; /* Vertically centers the text and image */
+    gap: 8px; /* Adds space between the icon and the text "NeuraTube AI" */
+    margin: 0; /* Remove default h2 margin */
+}
+
+#neuratube-sidebar .nt-logo {
+    width: 28px; /* Adjust size slightly larger than 16px for visual prominence */
+    height: 28px;
+    /* This ensures the image is displayed correctly without distortion */
+    object-fit: contain; 
+}

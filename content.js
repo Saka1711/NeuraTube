@@ -135,7 +135,10 @@ function injectSidebar() {
   sidebar.id = "neuratube-sidebar";
   sidebar.innerHTML = `
     <div class="nt-header">
-      <h2>NeuraTube AI</h2>
+      <h2 class="nt-title">
+        <img src="${chrome.runtime.getURL('icons/icon16.png')}" alt="NeuraTube Icon" class="nt-logo">
+        NeuraTube AI
+      </h2>
       <div class="nt-actions">
         <button id="nt-darkmode">🌙</button>
         <button id="nt-close">✕</button>
