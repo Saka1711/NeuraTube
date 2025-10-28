@@ -1,5 +1,3 @@
-// content.js - FINAL VERSION (Fixing Persistence and Duplication)
-
 // --- Configuration ---
 const API_ENDPOINT = "https://neuratube-backend.vercel.app/api/summarizer";
 
@@ -71,7 +69,7 @@ function aggressivelyUpdateTitle() {
 }
 
 
-// *** THE CRITICAL FIX IS HERE: Enhanced Navigation Observer ***
+// *** Enhanced Navigation Observer ***
 function waitForVideoPage() {
     
     const titleElement = document.querySelector('head > title');
