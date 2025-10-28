@@ -1,0 +1,85 @@
+#neuratube-sidebar {
+  /* CRITICAL: Use static/flow for correct positioning in YouTube's #secondary-inner */
+  position: static; 
+  width: 100%;
+  max-width: none; 
+  margin: 0 0 24px 0; 
+  
+  background-color: #0f0f0f;
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  font-family: "Roboto", sans-serif;
+  transition: all 0.3s ease;
+}
+
+/* Media Query for small screens (less than 900px wide) */
+@media (max-width: 900px) {
+    #neuratube-sidebar {
+        max-width: 600px; 
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+#neuratube-sidebar.dark {
+  background-color: #f1f1f1;
+  color: #000;
+}
+
+.nt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nt-actions {
+  display: flex;
+  gap: 10px;
+}
+
+#nt-summarize {
+  margin-top: 10px;
+  width: 100%;
+  background-color: #cc0000;
+  border: none;
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#nt-summarize:hover {
+  background-color: #ff0000;
+}
+
+.nt-summary-box {
+  margin-top: 10px;
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 10px;
+  padding-top: 30px; 
+  max-height: 400px; 
+  overflow-y: auto;
+}
+
+#nt-summary p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+#nt-copy {
+  position: absolute;
+  top: 5px; 
+  right: 5px; 
+  
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-size: 18px;
+  cursor: pointer;
+}
