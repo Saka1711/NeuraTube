@@ -20,12 +20,10 @@ function getTranscriptText() {
     
     if (transcriptContainer && transcriptContainer.innerText.length > 100) {
         const rawText = transcriptContainer.innerText;
-        // Keep the regex cleanup for timestamps
         const cleanedText = rawText.replace(/(\d+:\d{2}:\d{2})\s*\n?/g, ' ').trim();
         return cleanedText.substring(0, 5000); 
     }
     
-    // Fallback for transcripts hidden in ytd-transcript-body-renderer (for full safety)
     const transcriptBody = document.querySelector('ytd-transcript-body-renderer');
     if (transcriptBody) {
         const textElements = transcriptBody.querySelectorAll('yt-formatted-string');
@@ -69,7 +67,7 @@ function aggressivelyUpdateTitle() {
 }
 
 
-// *** Enhanced Navigation Observer ***
+// HYBRID OBSERVER: Using Title Observer for Navigation (Fixes Title) + Interval for Reload (Fixes Panel)
 function waitForVideoPage() {
     
     const titleElement = document.querySelector('head > title');
@@ -81,27 +79,21 @@ function waitForVideoPage() {
 
             if (window.location.href.includes("watch?v=") && newVideoId) {
                 
-                // If the video ID has changed or if the sidebar exists but the ID is new
                 if (newVideoId !== currentVideoId || (sidebarExists && newVideoId === currentVideoId)) {
                     
-                    // 1. **CLEANUP:** Always remove the existing sidebar first if it's present.
                     if (sidebarExists) {
                         sidebarExists.remove();
                         if (titleRetryInterval) clearInterval(titleRetryInterval);
                     }
                     
-                    // 2. **UPDATE:** Set the new current video ID.
                     currentVideoId = newVideoId;
 
-                    // 3. **INJECT:** Inject the new sidebar if the container is ready.
                     if (secondaryContainer) {
                         injectSidebar();
-                        // 4. **FIX TITLE:** Start the retry loop for the title.
                         aggressivelyUpdateTitle(); 
                     }
                 }
             } else {
-                // Navigated off a watch page
                 if (sidebarExists) {
                     if (titleRetryInterval) clearInterval(titleRetryInterval);
                     sidebarExists.remove();
@@ -130,13 +122,12 @@ function waitForVideoPage() {
 function injectSidebar() {
   if (titleRetryInterval) clearInterval(titleRetryInterval);
   
-  // *** YOUR ORIGINAL HTML STRUCTURE IS PRESERVED ***
   const sidebar = document.createElement("div");
   sidebar.id = "neuratube-sidebar";
   sidebar.innerHTML = `
     <div class="nt-header">
       <h2 class="nt-title">
-        <img src="${chrome.runtime.getURL('icons/icon16.png')}" alt="NeuraTube Icon" class="nt-logo">
+        <img src="${chrome.runtime.getURL('icons/icon48.png')}" alt="NeuraTube Icon" class="nt-logo"> 
         NeuraTube AI
       </h2>
       <div class="nt-actions">
@@ -169,7 +160,6 @@ function injectSidebar() {
 }
 
 function updateVideoInfo() {
-  // Use a more generic query to capture the title element reliably on different layouts
   const titleEl = document.querySelector('h1 yt-formatted-string') || document.querySelector("yt-formatted-string.ytd-watch-metadata");
   const descEl = document.querySelector("#description") || document.querySelector("#description-inline-expander");
 
@@ -178,7 +168,6 @@ function updateVideoInfo() {
 
   const infoDiv = document.getElementById("nt-video-info");
   if (infoDiv) {
-    // Displays the title in the info div
     infoDiv.innerHTML = `<h3>${title}</h3>`;
   }
 
@@ -200,7 +189,6 @@ async function summarizeVideo() {
   let sourceName = "description";
   let promptPrefix = "";
 
-  // Fallback Logic (Checks transcript, then falls back to title)
   if (sourceText.length < 50) { 
     const transcript = getTranscriptText();
     
@@ -210,14 +198,13 @@ async function summarizeVideo() {
     } else {
       sourceText = `The video title is: "${title}".`;
       sourceName = "title only";
-      promptPrefix = "WARNING: Only the video title is available. Based ONLY on the title, infer the likely content and state clearly in the first sentence that this summary is based solely on the title.";
+      promptPrefix = "WARNING: Only the video title is available. Based ONLY on the title, infer the likely content. Separate this warning and the actual summary content with a line break (newline character).";
     }
   }
 
   try {
-    const finalPrompt = `${promptPrefix} Summarize this YouTube video using the following ${sourceName} text: "${sourceText}". Give 3 bullet points and one short paragraph.`;
+    const finalPrompt = `${promptPrefix} Summarize this YouTube video using the following ${sourceName} text: "${sourceText}". Give 3 clear bullet points and one short, final paragraph.`;
     
-    // Calling your SECURE VERCEL ENDPOINT
     const response = await fetch(API_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -236,15 +223,37 @@ async function summarizeVideo() {
       data.summary ||
       "⚠️ Could not generate summary. Check your Vercel logs.";
 
+    // --- NEW RENDERING LOGIC ---
+    const separatorHtml = '<hr style="border: 0; border-top: 1px solid rgba(255, 255, 255, 0.2); margin: 10px 0;">';
+
     summaryBox.innerHTML = `
       <div class="nt-summary-box">
         <button id="nt-copy" title="Copy Summary">📋</button>
-        <div>${summary}</div> 
+        <div id="summary-content-wrapper"></div>
       </div>
     `;
+    
+    const contentWrapper = document.getElementById('summary-content-wrapper');
+    
+    if (summary.startsWith("WARNING:")) {
+        // Find the index of the first newline after the disclaimer
+        const firstNewlineIndex = summary.indexOf('\n');
+        const disclaimer = firstNewlineIndex !== -1 ? summary.substring(0, firstNewlineIndex).trim() : summary.trim();
+        const actualContent = firstNewlineIndex !== -1 ? summary.substring(firstNewlineIndex + 1).trim() : '';
+
+        contentWrapper.innerHTML = `
+            <p class="nt-disclaimer">${disclaimer}</p>
+            ${separatorHtml}
+            <pre class="nt-summary-pre">${actualContent}</pre>
+        `;
+    } else {
+         // Use <pre> tag to preserve the AI's intended formatting (bullets, spacing)
+         contentWrapper.innerHTML = `<pre class="nt-summary-pre">${summary}</pre>`;
+    }
 
     document.getElementById("nt-copy").onclick = () => {
-      navigator.clipboard.writeText(summary);
+      // Use the clean, original summary text for copying
+      navigator.clipboard.writeText(summary); 
       alert("Summary copied!");
     };
   } catch (err) {

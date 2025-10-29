@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "NeuraTube - AI Video Summarizer",
-    "version": "1.1",
+    "version": "1.2",
     "description": "Instant AI summaries, key takeaways, and insights for YouTube videos.",
     "web_accessible_resources": [
         {

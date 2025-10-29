@@ -10,14 +10,25 @@
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
   padding: 16px;
-  font-family: "Roboto", sans-serif;
+  font-family: "Roboto", sans-serif; 
   transition: all 0.3s ease;
+  display: block !important; 
 }
 
-/* Media Query for small screens (less than 900px wide) */
+/* --- FIX for Narrow Screens (Below 1018px) --- */
+@media (max-width: 1018px) {
+    #neuratube-sidebar {
+        max-width: 100%; 
+        margin-left: 0;
+        margin-right: 0;
+        display: block !important; 
+    }
+}
+
+
+/* Existing Media Query */
 @media (max-width: 900px) {
     #neuratube-sidebar {
-        max-width: 600px; 
         margin-left: auto;
         margin-right: auto;
     }
@@ -37,6 +48,36 @@
 .nt-actions {
   display: flex;
   gap: 10px;
+}
+
+/* Styles for the panel header title and logo */
+#neuratube-sidebar .nt-title {
+    display: flex;
+    align-items: center; 
+    /* --- Adjusted Gap for 48x48 Logo --- */
+    gap: 5px; 
+    
+    /* Increased size for header text (NeuraTube AI) */
+    font-size: 18px; 
+    font-weight: 700;
+    margin: 0; 
+}
+
+/* Updated logo size to 48x48 (display size 36x36) and adjusted margin */
+#neuratube-sidebar .nt-logo {
+    width: 36px; /* Display size */
+    height: 36px;
+    object-fit: contain; 
+    margin-top: -3px; 
+}
+
+/* --- ADDED STYLE FOR VIDEO TITLE (h3 inside nt-video-info) --- */
+#nt-video-info h3 {
+    /* Font family inherited as Roboto */
+    font-size: 16px; 
+    font-weight: 500;
+    margin: 10px 0 5px 0; 
+    line-height: 1.3;
 }
 
 #nt-summarize {
@@ -67,9 +108,29 @@
   overflow-y: auto;
 }
 
-#nt-summary p {
-    margin: 0;
+/* Style for the disclaimer paragraph */
+.nt-disclaimer {
+    font-weight: bold;
+    margin: 0 0 5px 0;
     line-height: 1.4;
+    font-size: 14px;
+}
+
+/* Style for the main summary content using the <pre> tag */
+.nt-summary-pre {
+    /* Increased Readability */
+    font-size: 14px; 
+    line-height: 1.6;
+    
+    /* Ensure the <pre> tag acts like normal text */
+    white-space: pre-wrap; 
+    word-wrap: break-word; 
+    
+    /* Resetting default <pre> styles */
+    margin: 0;
+    padding: 0;
+    font-family: inherit; /* Ensures Roboto font for the content */
+    color: inherit;
 }
 
 #nt-copy {
@@ -82,18 +143,4 @@
   color: inherit;
   font-size: 18px;
   cursor: pointer;
-}
-/* Styles for the panel header title and logo */
-#neuratube-sidebar .nt-title {
-    display: flex;
-    align-items: center; /* Vertically centers the text and image */
-    gap: 8px; /* Adds space between the icon and the text "NeuraTube AI" */
-    margin: 0; /* Remove default h2 margin */
-}
-
-#neuratube-sidebar .nt-logo {
-    width: 28px; /* Adjust size slightly larger than 16px for visual prominence */
-    height: 28px;
-    /* This ensures the image is displayed correctly without distortion */
-    object-fit: contain; 
 }
