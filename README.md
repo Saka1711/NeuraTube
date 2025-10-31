@@ -40,3 +40,11 @@ This extension includes robust solutions to handle the unique challenges of YouT
 4.  Click **Load unpacked** and select the extension directory.
 
 The extension should now be active on any YouTube watch page.
+
+---
+
+### 🎥 Video Demo
+
+Watch a full demonstration of NeuraTube's functionality, SPA handling, and AI summarization in the video below.
+
+[**Watch the NeuraTube Demo on YouTube**](https://www.youtube.com/watch?v=L2lUBj6eCG0)
