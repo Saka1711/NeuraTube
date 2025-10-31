@@ -121,13 +121,15 @@ function waitForVideoPage() {
 
 function injectSidebar() {
   if (titleRetryInterval) clearInterval(titleRetryInterval);
-  
+  const iconUrl = (typeof chrome !== 'undefined' && chrome.runtime) 
+                  ? chrome.runtime.getURL('icons/icon48.png') 
+                  : ''; // Use empty string if not available to prevent crash
   const sidebar = document.createElement("div");
   sidebar.id = "neuratube-sidebar";
   sidebar.innerHTML = `
     <div class="nt-header">
       <h2 class="nt-title">
-        <img src="${chrome.runtime.getURL('icons/icon48.png')}" alt="NeuraTube Icon" class="nt-logo"> 
+        <img src="${iconUrl}" alt="NeuraTube Icon" class="nt-logo"> 
         NeuraTube AI
       </h2>
       <div class="nt-actions">
